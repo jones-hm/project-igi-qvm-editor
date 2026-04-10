@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -64,14 +65,23 @@ namespace QVM_Editor
             }
 
             QUtils.AddLog($"XMove: Attempting to move from {src} to {dest}");
+            QUtils.AddLog($"XMove: Pre-check exists src={File.Exists(src)} dest={File.Exists(dest)}");
 
             try
             {
-                // Attempt to delete the destination file if it exists
-                QUtils.FileIODelete(dest);
+                string destDirectory = Path.GetDirectoryName(dest);
+                if (!String.IsNullOrEmpty(destDirectory) && !Directory.Exists(destDirectory))
+                {
+                    Directory.CreateDirectory(destDirectory);
+                }
 
-                QUtils.FileMove(src, dest);
-                QUtils.AddLog($"XMove: File moved from '{src}' to '{dest}'");
+                if (File.Exists(dest))
+                {
+                    File.Delete(dest);
+                }
+
+                File.Move(src, dest);
+                QUtils.AddLog($"XMove: File move call completed from '{src}' to '{dest}'");
 
                 // Post-move verification
                 if (File.Exists(dest) && !File.Exists(src))
@@ -92,6 +102,40 @@ namespace QVM_Editor
             return true;
         }
 
+        private static (string output, int exitCode) RunShellCommand(string commandFile)
+        {
+            try
+            {
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = "/c " + commandFile,
+                    CreateNoWindow = true,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    WorkingDirectory = Directory.GetCurrentDirectory()
+                };
+
+                using (var process = Process.Start(startInfo))
+                {
+                    if (process == null)
+                    {
+                        return (String.Empty, -1);
+                    }
+
+                    string stdOut = process.StandardOutput.ReadToEnd();
+                    string stdErr = process.StandardError.ReadToEnd();
+                    process.WaitForExit();
+                    return ($"{stdOut}{Environment.NewLine}{stdErr}".Trim(), process.ExitCode);
+                }
+            }
+            catch (Exception ex)
+            {
+                QUtils.AddLog($"RunShellCommand: Failed to run '{commandFile}'. Exception: {ex.Message}");
+                return (String.Empty, -1);
+            }
+        }
 
         public bool QCompile(List<string> qscFiles, string outputPath)
         {
@@ -123,16 +167,33 @@ namespace QVM_Editor
                     compileStart = compileStartv7;
 
                 QUtils.AddLog(logMsg: "Compile command file: " + compileStart, logPath: QUtils.logFilePath);
-                string shellOut = QUtils.ShellExec(compileStart);
+                string sourceFileName = Path.GetFileName(qscFiles[0]);
+                string compiledOutputPath = Path.Combine(Directory.GetCurrentDirectory(), "output", sourceFileName)
+                    .Replace(QUtils.qscFile, QUtils.qvmFile);
+                if (File.Exists(compiledOutputPath))
+                {
+                    File.Delete(compiledOutputPath);
+                    QUtils.AddLog(logMsg: "Compile: Deleted stale output file at " + compiledOutputPath, logPath: QUtils.logFilePath);
+                }
+
+                var (shellOut, exitCode) = RunShellCommand(compileStart);
                 QUtils.AddLog(logMsg: "Compile output: " + shellOut, logPath: QUtils.logFilePath);
-                if (shellOut.Contains("Error") || shellOut.Contains("importModule") || shellOut.Contains("ModuleNotFoundError") || shellOut.Contains("Converted: 0"))
+                QUtils.AddLog(logMsg: "Compile exit code: " + exitCode, logPath: QUtils.logFilePath);
+                if (exitCode != 0)
                 {
                     QUtils.ShowError("QCompiler: Error in compiling input files");
                     return false;
                 }
 
-                string srcPath = Path.Combine(Directory.GetCurrentDirectory(), "output", qscFiles[0]);
-                string destPath = Path.Combine(outputPath, qscFiles[0]);
+                string srcPath = Path.Combine(Directory.GetCurrentDirectory(), "output", sourceFileName);
+                string destPath = Path.Combine(outputPath, sourceFileName);
+
+                if (!File.Exists(srcPath.Replace(QUtils.qscFile, QUtils.qvmFile)))
+                {
+                    QUtils.ShowError("QCompiler: Compiled output file not found");
+                    QUtils.AddLog(logMsg: "Compile: Compiled output file not found at " + srcPath, logPath: QUtils.logFilePath);
+                    return false;
+                }
 
                 QUtils.AddLog(logMsg: "QCompile: Source path is " + srcPath, logPath: QUtils.logFilePath);
                 QUtils.AddLog(logMsg: "QCompile: Destination path is " + destPath, logPath: QUtils.logFilePath);
@@ -182,11 +243,22 @@ namespace QVM_Editor
                 QUtils.AddLog("QDecompile: setting path to " + decompilePath);
                 QSetPath(decompilePath);
 
-                string shellOut = QUtils.ShellExec(decompileStart);
+                var (shellOut, exitCode) = RunShellCommand(decompileStart);
                 QUtils.AddLog(logMsg: "Decompile output: " + shellOut, logPath: QUtils.logFilePath);
-                if (shellOut.Contains("Error") || shellOut.Contains("importModule") || shellOut.Contains("ModuleNotFoundError") || shellOut.Contains("Converted: 0"))
+                QUtils.AddLog(logMsg: "Decompile exit code: " + exitCode, logPath: QUtils.logFilePath);
+                if (exitCode != 0)
                 {
                     QUtils.ShowError("QCompiler: Error in decompiling input files");
+                    return false;
+                }
+
+                string sourceFileName = Path.GetFileName(qvmFiles[0]);
+                string decompiledOutputPath = Path.Combine(Directory.GetCurrentDirectory(), "output", sourceFileName)
+                    .Replace(QUtils.qvmFile, QUtils.qscFile);
+                if (!File.Exists(decompiledOutputPath))
+                {
+                    QUtils.ShowError("QCompiler: Decompiled output file not found");
+                    QUtils.AddLog(logMsg: "Decompile: Decompiled output file not found at " + decompiledOutputPath, logPath: QUtils.logFilePath);
                     return false;
                 }
 
