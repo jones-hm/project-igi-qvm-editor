@@ -1325,7 +1325,7 @@ namespace QVM_Editor
 
             string infoMsg = "Project IGI QVM Editor is tool to Edit QVM File in IGI 1 & IGI 2\n" +
         "Developed by: Haseeb Mir\n" +
-        "App/Language: C# (.NET 4.0) / GUI.\n" +
+        "App/Language: C# (.NET 4.8) / GUI.\n" +
         "Credits/Thanks: Artiom (QCompiler), Dark (UI/Tools).\n" +
         "Application Version: v" + QUtils.appVersion + "\n";
             QUtils.ShowInfo(infoMsg);
