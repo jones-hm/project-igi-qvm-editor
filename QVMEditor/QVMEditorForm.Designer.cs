@@ -55,6 +55,7 @@
             this.outdentSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.changeThemeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.automaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.darkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lightToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.classicToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,7 +82,6 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.appVersionTxt = new System.Windows.Forms.Label();
-            this.automaticToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TextPanel.SuspendLayout();
             this.PanelSearch.SuspendLayout();
             this.PanelReplace.SuspendLayout();
@@ -256,21 +256,23 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(148, 28);
+            this.openToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+O";
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(224, 28);
             this.openToolStripMenuItem.Text = "Open...";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(148, 28);
+            this.saveToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+S";
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(224, 28);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(148, 28);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(224, 28);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -366,24 +368,31 @@
             this.changeThemeToolStripMenuItem.Size = new System.Drawing.Size(240, 28);
             this.changeThemeToolStripMenuItem.Text = "Theme";
             // 
+            // automaticToolStripMenuItem
+            // 
+            this.automaticToolStripMenuItem.Name = "automaticToolStripMenuItem";
+            this.automaticToolStripMenuItem.Size = new System.Drawing.Size(173, 28);
+            this.automaticToolStripMenuItem.Text = "Automatic";
+            this.automaticToolStripMenuItem.Click += new System.EventHandler(this.automaticToolStripMenuItem_Click);
+            // 
             // darkToolStripMenuItem
             // 
             this.darkToolStripMenuItem.Name = "darkToolStripMenuItem";
-            this.darkToolStripMenuItem.Size = new System.Drawing.Size(144, 28);
+            this.darkToolStripMenuItem.Size = new System.Drawing.Size(173, 28);
             this.darkToolStripMenuItem.Text = "Dark";
             this.darkToolStripMenuItem.Click += new System.EventHandler(this.darkToolStripMenuItem_Click);
             // 
             // lightToolStripMenuItem
             // 
             this.lightToolStripMenuItem.Name = "lightToolStripMenuItem";
-            this.lightToolStripMenuItem.Size = new System.Drawing.Size(144, 28);
+            this.lightToolStripMenuItem.Size = new System.Drawing.Size(173, 28);
             this.lightToolStripMenuItem.Text = "Light";
             this.lightToolStripMenuItem.Click += new System.EventHandler(this.lightToolStripMenuItem_Click);
             // 
             // classicToolStripMenuItem
             // 
             this.classicToolStripMenuItem.Name = "classicToolStripMenuItem";
-            this.classicToolStripMenuItem.Size = new System.Drawing.Size(144, 28);
+            this.classicToolStripMenuItem.Size = new System.Drawing.Size(173, 28);
             this.classicToolStripMenuItem.Text = "Classic";
             this.classicToolStripMenuItem.Click += new System.EventHandler(this.classicToolStripMenuItem_Click);
             // 
@@ -569,13 +578,6 @@
             this.appVersionTxt.Size = new System.Drawing.Size(127, 22);
             this.appVersionTxt.TabIndex = 1;
             this.appVersionTxt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // automaticToolStripMenuItem
-            // 
-            this.automaticToolStripMenuItem.Name = "automaticToolStripMenuItem";
-            this.automaticToolStripMenuItem.Size = new System.Drawing.Size(224, 28);
-            this.automaticToolStripMenuItem.Text = "Automatic";
-            this.automaticToolStripMenuItem.Click += new System.EventHandler(this.automaticToolStripMenuItem_Click);
             // 
             // QVMEditorForm
             // 

@@ -205,6 +205,10 @@ namespace QVM_Editor
             HotKeyManager.AddHotKey(this, OpenSearch, Keys.F, true);
             HotKeyManager.AddHotKey(this, OpenReplaceDialog, Keys.R, true);
             HotKeyManager.AddHotKey(this, OpenReplaceDialog, Keys.H, true);
+            HotKeyManager.AddHotKey(this, OpenDataFile, Keys.O, true);
+            HotKeyManager.AddHotKey(this, SaveDataFile, Keys.S, true);
+            HotKeyManager.AddHotKey(this, UndoEdit, Keys.Z, true);
+            HotKeyManager.AddHotKey(this, RedoEdit, Keys.Y, true);
             HotKeyManager.AddHotKey(this, ZoomIn, Keys.Oemplus, true);
             HotKeyManager.AddHotKey(this, ZoomOut, Keys.OemMinus, true);
             HotKeyManager.AddHotKey(this, ZoomDefault, Keys.D0, true);
@@ -215,8 +219,34 @@ namespace QVM_Editor
             scintilla.ClearCmdKey(Keys.Control | Keys.R);
             scintilla.ClearCmdKey(Keys.Control | Keys.H);
             scintilla.ClearCmdKey(Keys.Control | Keys.L);
+            scintilla.ClearCmdKey(Keys.Control | Keys.O);
+            scintilla.ClearCmdKey(Keys.Control | Keys.S);
             scintilla.ClearCmdKey(Keys.Control | Keys.U);
+            scintilla.ClearCmdKey(Keys.Control | Keys.Z);
+            scintilla.ClearCmdKey(Keys.Control | Keys.Y);
             QUtils.AddLog("Exiting method: InitHotkeys()");
+        }
+
+        private void OpenDataFile()
+        {
+            openToolStripMenuItem_Click(this, EventArgs.Empty);
+        }
+
+        private void SaveDataFile()
+        {
+            saveToolStripMenuItem_Click(this, EventArgs.Empty);
+        }
+
+        private void UndoEdit()
+        {
+            if (scintilla.CanUndo)
+                scintilla.Undo();
+        }
+
+        private void RedoEdit()
+        {
+            if (scintilla.CanRedo)
+                scintilla.Redo();
         }
 
         private void InitSyntaxColoring()
@@ -1325,7 +1355,7 @@ namespace QVM_Editor
 
             string infoMsg = "Project IGI QVM Editor is tool to Edit QVM File in IGI 1 & IGI 2\n" +
         "Developed by: Haseeb Mir\n" +
-        "App/Language: C# (.NET 4.0) / GUI.\n" +
+        "App/Language: C# (.NET 4.8) / GUI.\n" +
         "Credits/Thanks: Artiom (QCompiler), Dark (UI/Tools).\n" +
         "Application Version: v" + QUtils.appVersion + "\n";
             QUtils.ShowInfo(infoMsg);
